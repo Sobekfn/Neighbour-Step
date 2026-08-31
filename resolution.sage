@@ -1597,11 +1597,6 @@ class Resolution:
         xP = coords[0]
         yP = coords[1]
 
-
-        # ============================================================
-        # NEW: convert a global section to the infinity chart
-        # ============================================================
-
         if self.is_infinity:
 
             Ku = Ru.fraction_field()
@@ -1638,17 +1633,13 @@ class Resolution:
             )
 
 
-        # ============================================================
-        # From here, OLD CODE
-        # ============================================================
-
         x_n0 = Ru(xP.numerator())
         x_d0 = Ru(xP.denominator())
 
         y_n0 = Ru(yP.numerator())
         y_d0 = Ru(yP.denominator())
 
-        if x_d0(self.place) == 0 or y_d0(self.place) == 0: #I highly doubt this is right...
+        if x_d0(self.place) == 0 or y_d0(self.place) == 0: #NEEDS TO BE FIXED
             return v
 
         x_n = phi(x_n0)
@@ -1660,11 +1651,7 @@ class Resolution:
 
         I_P = R.ideal([x_d*x - x_n, y_d*y - y_n])
 
-        # --------------------------------------------------------
-        # There should be exactly one initial blowup in this
-        # Resolution object.
-        # --------------------------------------------------------
-
+        
         r_blowups = [
             self.blowups[blowup_id]
             for blowup_id in self.root.blowups
@@ -1686,10 +1673,6 @@ class Resolution:
             first_step.center
         ):
             return v
-
-        # ========================================================
-        # Strict transform of P on an arbitrary chart
-        # ========================================================
 
         section_ideals = {
             self.root.id: I_P
@@ -1717,9 +1700,6 @@ class Resolution:
 
             return I
 
-        # ========================================================
-        # Find all blowup centers through which P passes
-        # ========================================================
 
         hit_steps = []
 
@@ -1740,15 +1720,9 @@ class Resolution:
             ):
                 hit_steps.append(blowup_id)
 
-        # This shouldn't happen since we already checked first_step,
-        # but leave it as a safeguard.
+
         if len(hit_steps) == 0:
             return v
-
-        # ========================================================
-        # The final component met by P comes from the deepest
-        # blowup center through which P passes.
-        # ========================================================
 
         def blowup_depth(blowup_id):
 
@@ -1787,20 +1761,10 @@ class Resolution:
                 f"Blowup {last_blowup_id} created no exceptional components."
             )
 
-        # ========================================================
-        # If only one exceptional component is created, done.
-        # ========================================================
-
         if len(new_components) == 1:
 
             component_id = new_components[0]
 
-        # ========================================================
-        # Otherwise the tangent cone factored and several
-        # exceptional components were created.
-        #
-        # Determine which of them the strict transform of P meets.
-        # ========================================================
 
         else:
 
@@ -1843,11 +1807,6 @@ class Resolution:
                 )
 
             component_id = candidates.pop()
-
-        # ========================================================
-        # Convert geometric component ID into Sage's Cartan
-        # numbering.
-        # ========================================================
 
         if component_id not in labels:
             raise RuntimeError(
